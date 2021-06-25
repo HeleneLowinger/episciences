@@ -3523,4 +3523,60 @@ class Episciences_Paper
         return Episciences_Paper_FilesManager::findByName($this->_docId, $fileName);
 
     }
+
+    public function getDatacite(): string
+    {
+        $volume = '';
+        $section = '';
+
+        if ($this->getVid()) {
+            /* @var $oVolume Episciences_Volume */
+            $oVolume = Episciences_VolumesManager::find($this->getVid());
+            if ($oVolume) {
+                $volume = $oVolume->getName('en', true);
+            }
+        }
+
+        if ($this->getSid()) {
+            /* @var $oSection Episciences_Section */
+            $oSection = Episciences_SectionsManager::find($this->getSid());
+            if ($oSection) {
+                $section = $oSection->getName('en', true);
+            }
+        }
+
+        // Récupération des infos de la revue
+        $journal = Episciences_ReviewsManager::find($this->getRvid());
+        $journal->loadSettings();
+
+        // Create new DOI if none exist
+        if ($this->getDoi() === '') {
+            $journalDoi = $journal->getDoiSettings();
+            $doi = $journalDoi->createDoiWithTemplate($this);
+        } else {
+            $doi = $this->getDoi();
+        }
+
+        $paperLanguage = $this->getMetadata('language');
+
+        if (empty($paperLanguage)) {
+            $paperLanguage = 'eng';
+            // TODO temporary fix see https://gitlab.ccsd.cnrs.fr/ccsd/episciences/issues/215
+            // this attribute is required by the datacite schema
+            //arxiv doesnt have it, we need to fix this by asking the author additional information
+        }
+
+        $view = new Zend_View();
+        $view->addScriptPath(APPLICATION_PATH . '/modules/journal/views/scripts/export/');
+
+        return $view->partial('datacite.phtml', [
+            'volume' => $volume,
+            'section' => $section,
+            'journal' => $journal,
+            'paper' => $this,
+            'doi' => $doi,
+            'paperLanguage' => $paperLanguage
+        ]);
+
+    }
 }
