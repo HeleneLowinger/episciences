@@ -34,7 +34,7 @@ class AdministratepaperController extends PaperDefaultController
      * Liste tous les articles
      * @throws Zend_Exception
      */
-    public function listAction()
+    public function listAction(): void
     {
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();

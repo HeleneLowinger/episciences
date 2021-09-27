@@ -556,7 +556,7 @@ class Episciences_Review
 
     /**
      * Récupération d'une liste d'article de la revue, peut être filtrée par des options
-     * @param array $options
+     * @param array|null $options
      * $options['is']['key'] = value     : WHERE key = value
      * $options['isNot']['key'] = value : WHERE key != value
      * $options['limit'] = limit    : LIMIT limit
@@ -564,7 +564,7 @@ class Episciences_Review
      * @param bool $cached
      * @param bool $isFilterInfos
      * @return Episciences_Paper[]
-     * @throws Zend_Exception
+     * @throws Zend_Db_Select_Exception
      */
     public function getPapers(array $options = null, $cached = false, bool $isFilterInfos = false): array
     {
