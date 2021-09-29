@@ -103,9 +103,12 @@ class Episciences_PapersManager
     {
 
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-        $select = (!$isCount) ?
-            $db->select()->from(T_PAPERS) :
-            $db->select()->from(T_PAPERS, [new Zend_Db_Expr("COUNT('DOCID')")]);
+
+        $papersQuery = $db->select()->from(['papers' => T_PAPERS])->joinLeft(['conflicts' => T_PAPER_CONFLICTS], 'papers.PAPERID = conflicts.paper_id' );
+
+        $countQuery = $db->select()->from($papersQuery, [new Zend_Db_Expr("COUNT('DOCID')")]);
+
+        $select = (!$isCount) ? $papersQuery : $countQuery;
 
         //Filters
         $select = self::applyFilters($select, $settings, $isFilterInfos);

@@ -95,12 +95,13 @@ foreach ($this->list as $paper) : ?>
             ?>
         </td>
         <?php // article reviewers ***************************************** ?>
-        <td <?php if ($paper->getUid() === $loggedUid) {
+        <?php $hasConflict = $paper->hasConflict($loggedUid); ?>
+        <td <?php if ($hasConflict || $paper->getUid() === $loggedUid ) {
             echo " style='background: #fcfcfc' data-toggle='tooltip' data-original-title=\"" . $this->translate("Vous ne pouvez pas voir les relecteurs d'un article que vous avez déposé vous-même") . '"';
         } ?>>
             <?php // echo $this->partial('partials/paper_reviewers.phtml', array('article'=>$paper, 'isPartial'=>true)); ?>
             <?php // user can't see reviewers for his own submissions ?>
-            <?php if ($paper->getUid() !== $loggedUid) : ?>
+            <?php if (!$hasConflict && $paper->getUid() !== $loggedUid ) : ?>
                 <?php
                 $reviewers = $paper->getReviewers();
                 $ratings = $paper->getRatings();

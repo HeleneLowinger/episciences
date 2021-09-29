@@ -264,6 +264,9 @@ class Episciences_Paper
     /** @var Episciences_CopyEditor[] $_copyEditors */
     private $_copyEditors;
 
+    /** @var Episciences_Paper_Conflict */
+    private $_conflict;
+
     /**
      * Position in volume
      * @var null | int
@@ -295,8 +298,16 @@ class Episciences_Paper
      */
     public function setOptions(array $options): self
     {
+        $conflict = [];
+
         $classMethods = get_class_methods($this);
+
         foreach ($options as $key => $value) {
+
+            if (in_array($key, Episciences_Paper_Conflict::TABLE_COLONES, true)) {
+                $conflict[$key] = $value;
+            }
+
             $key = strtolower($key);
             $method = 'set' . ucfirst($key);
             if (in_array($method, $classMethods, true)) {
@@ -312,6 +323,8 @@ class Episciences_Paper
         if (isset($record)) {
             $this->setRecord($record);
         }
+
+        $this->setConflict(new Episciences_Paper_Conflict($conflict));
 
         return $this;
     }
@@ -3750,6 +3763,36 @@ class Episciences_Paper
     public function isImported(): bool
     {
         return ($this->getFlag() === 'imported');
+    }
+
+    /**
+     * @return Episciences_Paper_Conflict
+     */
+    public function getConflict(): Episciences_Paper_Conflict
+    {
+        return $this->_conflict;
+    }
+
+    /**
+     * @param Episciences_Paper_Conflict $conflict
+     * @return Episciences_Paper
+     */
+    public function setConflict(Episciences_Paper_Conflict $conflict): self
+    {
+        $this->_conflict = $conflict;
+        return $this;
+    }
+
+    /**
+     * @param int $uid
+     * @return bool
+     */
+    public function hasConflict(int $uid): bool
+    {
+
+        $conflict = $this->getConflict();
+        return ($conflict->getPaperId() === $this->getPaperid() && $conflict->getBY() === $uid && $conflict->getAnswer() === Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes']);
+
     }
 
 }
