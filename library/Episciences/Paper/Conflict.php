@@ -35,7 +35,7 @@ class Episciences_Paper_Conflict
     /**
      * @var string
      */
-    protected $_message = '';
+    protected $_message;
 
     /**
      * @var DateTime
@@ -156,16 +156,16 @@ class Episciences_Paper_Conflict
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
         return $this->_message;
     }
 
     /**
-     * @param string $message
+     * @param string|null $message
      * @return Episciences_Paper_Conflict
      */
-    public function setMessage(string $message): self
+    public function setMessage(string $message = null): self
     {
         $this->_message = $message;
         return $this;
@@ -272,7 +272,7 @@ class Episciences_Paper_Conflict
     public function remove(): bool
     {
         $id = $this->getCid();
-        
+
         if (!$id) {
             return false;
         }
