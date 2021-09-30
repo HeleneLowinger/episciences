@@ -216,7 +216,6 @@ class AdministratemailController extends Zend_Controller_Action
 
             $review = Episciences_ReviewsManager::find(RVID);
             $review->loadSettings();
-            $docIds = null;
 
             if (!Episciences_Auth::isSecretary() && $review->getSetting(Episciences_Review::SETTING_ENCAPSULATE_EDITORS)) {
                 $editor = new Episciences_Editor();
