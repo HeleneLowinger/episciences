@@ -264,8 +264,8 @@ class Episciences_Paper
     /** @var Episciences_CopyEditor[] $_copyEditors */
     private $_copyEditors;
 
-    /** @var Episciences_Paper_Conflict */
-    private $_conflict;
+    /** @var Array [Episciences_Paper_Conflict] */
+    private $_conflicts = [];
 
     /**
      * Position in volume
@@ -298,15 +298,9 @@ class Episciences_Paper
      */
     public function setOptions(array $options): self
     {
-        $conflict = [];
-
         $classMethods = get_class_methods($this);
 
         foreach ($options as $key => $value) {
-
-            if (in_array($key, Episciences_Paper_Conflict::TABLE_COLONES, true)) {
-                $conflict[$key] = $value;
-            }
 
             $key = strtolower($key);
             $method = 'set' . ucfirst($key);
@@ -323,8 +317,6 @@ class Episciences_Paper
         if (isset($record)) {
             $this->setRecord($record);
         }
-
-        $this->setConflict(new Episciences_Paper_Conflict($conflict));
 
         return $this;
     }
@@ -3766,20 +3758,26 @@ class Episciences_Paper
     }
 
     /**
-     * @return Episciences_Paper_Conflict
+     * @return array [Episciences_Paper_Conflict]
      */
-    public function getConflict(): Episciences_Paper_Conflict
+    public function getConflicts(): array
     {
-        return $this->_conflict;
+        return $this->_conflicts;
     }
 
     /**
-     * @param Episciences_Paper_Conflict $conflict
+     * @param array $conflicts
      * @return Episciences_Paper
      */
-    public function setConflict(Episciences_Paper_Conflict $conflict): self
+    public function setConflicts(array $conflicts): self
     {
-        $this->_conflict = $conflict;
+        $oConflicts = [];
+
+        foreach ($conflicts as $conflict){
+            $oConflicts[] = new Episciences_Paper_Conflict($conflict);
+        }
+
+        $this->_conflicts = $oConflicts;
         return $this;
     }
 
@@ -3790,8 +3788,22 @@ class Episciences_Paper
     public function hasConflict(int $uid): bool
     {
 
-        $conflict = $this->getConflict();
-        return ($conflict->getPaperId() === $this->getPaperid() && $conflict->getBY() === $uid && $conflict->getAnswer() === Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes']);
+        $found = false;
+
+        foreach ($this->getConflicts() as $oConflict) {
+
+            if ($oConflict->getBY() === $uid && $oConflict->getPaperId() === $this->getPaperid()) { // unique in conflict table
+
+                if ($oConflict->getAnswer() === Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes']) {
+                    $found = true;
+                }
+
+                break;
+            }
+
+        }
+
+        return $found;
 
     }
 
