@@ -3783,28 +3783,21 @@ class Episciences_Paper
 
     /**
      * @param int $uid
-     * @return bool
+     * @return string
      */
-    public function hasConflict(int $uid): bool
+    public function checkConflictResponse(int $uid): string
     {
 
-        $found = false;
-
+        /** @var Episciences_Paper_Conflict $oConflict */
         foreach ($this->getConflicts() as $oConflict) {
 
-            if ($oConflict->getBY() === $uid && $oConflict->getPaperId() === $this->getPaperid()) { // unique in conflict table
-
-                if ($oConflict->getAnswer() === Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes']) {
-                    $found = true;
-                }
-
-                break;
+            if ($oConflict->getBY() === $uid && $oConflict->getPaperId() === $this->getPaperid()) { // unique in T_PAPER_CONFLICTS table
+                return $oConflict->getAnswer();
             }
 
         }
 
-        return $found;
-
+        return Episciences_Paper_Conflict::AVAILABLE_ANSWER['later'];
     }
 
 }
