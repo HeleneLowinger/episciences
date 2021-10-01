@@ -135,6 +135,7 @@ class AdministratepaperController extends PaperDefaultController
                     'list' => $papers,
                     'volumes' => $volumes,
                     'sections' => $sections,
+                    'isCoiEnabled' => $review->getSetting(Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED)
                 ]) :
                 '';
 
@@ -290,6 +291,7 @@ class AdministratepaperController extends PaperDefaultController
                     'list' => $papers,
                     'volumes' => $volumes,
                     'sections' => $sections,
+                    'isCoiEnabled' => $review->getSetting(Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED)
                 ]) :
                 '';
 
@@ -472,17 +474,43 @@ class AdministratepaperController extends PaperDefaultController
         $paper = Episciences_PapersManager::get($docId);
 
         // check if paper exists
-        if (!$paper || $paper->getRvid() != RVID) {
+        if (!$paper || $paper->getRvid() !== RVID) {
             $actionName = Episciences_Auth::isAllowedToManagePaper() ? 'list' : self::ACTION_ASSIGNED;
-            $this->_helper->FlashMessenger->setNamespace('warning')->addMessage("Le document demande n’existe pas.");
+            $this->_helper->FlashMessenger->setNamespace('warning')->addMessage($this->view->translate("Le document demande n’existe pas."));
             $this->_helper->redirector->gotoUrl('/' . self::ADMINISTRATE_PAPER_CONTROLLER . '/' . $actionName);
         }
 
+        $loggedUid = Episciences_Auth::getUid();
+
+        $checkConflictResponse = $paper->checkConflictResponse($loggedUid);
+
+        $isConflictDetected =
+            !Episciences_Auth::isSecretary() && $review->getSetting(Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED) &&
+            (
+                in_array($checkConflictResponse, [Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes'], Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']], true)
+            );
+
+
         // check if user has required permissions
-        if (APPLICATION_ENV !== 'development' && Episciences_Auth::getUid() === $paper->getUid()) {
-            $this->_helper->FlashMessenger->setNamespace('warning')->addMessage('Vous avez été redirigé, car vous ne pouvez pas gérer un article que vous avez vous-même déposé');
+        if ($isConflictDetected || $loggedUid === $paper->getUid()) {
+
+            $message = 'Vous avez été redirigé, car vous ne pouvez pas gérer un article que vous avez vous-même déposé';
+
+            if ($isConflictDetected) {
+
+                if ($checkConflictResponse === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
+                    $message = "Vous avez été redirigé, car vous devez confirmer votre volonté d'accéder aux informations confidentielles liées à cette soumission";
+                } else {
+                    $message = "Vous avez été redirigé, car vous ne pouvez pas gérer un article pour lequel vous auriez un conflit d'intérêt";
+                }
+
+            }
+
+            $this->_helper->FlashMessenger->setNamespace('warning')->addMessage($this->view->translate($message));
             $this->_helper->redirector->gotoUrl('/paper/view?id=' . $paper->getDocid());
+
         }
+
         // get contributor details
         $contributor = new Episciences_User();
         $contributor->findWithCAS($paper->getUid());
@@ -650,8 +678,8 @@ class AdministratepaperController extends PaperDefaultController
         $all_editors = Episciences_UsersManager::getUsersWithRoles(Episciences_Acl::ROLE_EDITOR);
 
         // Echapper l'éditeur en cours
-        if (array_key_exists(Episciences_Auth::getUid(), $all_editors)) {
-            unset($all_editors[Episciences_Auth::getUid()]);
+        if (array_key_exists($loggedUid, $all_editors)) {
+            unset($all_editors[$loggedUid]);
         }
 
         // Echapper les éditeurs assignés à l'article
@@ -700,7 +728,7 @@ class AdministratepaperController extends PaperDefaultController
         // ne plus gérer l'article
         $rejections = Episciences_EditorsManager::getRejectionComments($paper->getDocid());
         $this->view->rejections = $rejections;
-        $this->view->isMonitoringRefused = Episciences_EditorsManager::isMonitoringRefused(Episciences_Auth::getUid(), $paper->getDocid());
+        $this->view->isMonitoringRefused = Episciences_EditorsManager::isMonitoringRefused($loggedUid, $paper->getDocid());
 
         // other versions block
         $versions = [];

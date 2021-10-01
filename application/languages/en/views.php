@@ -1753,6 +1753,7 @@ return [
     //COI
     "Conflit d'intérêts (CI)" => "Conflict Of Interest (COI)",
     "Activer/Désactiver le mode CI" => "Enable/Disable COI",
-    "Le mode conflit d'intérêts (CI) aura les effets suivants : toutes les informations non publiques concernant une soumission ne sont pas accessibles à un éditeur tant qu'il n'a pas déclaré l'absence de tout conflit d'intérêts" => "This mode will have the following effects: all non-public information about a submission is not accessible to an editor until he/she has declared the absence of any conflict of interest"
-
+    "Le mode conflit d'intérêts (CI) aura les effets suivants : toutes les informations non publiques concernant une soumission ne sont pas accessibles à un éditeur tant qu'il n'a pas déclaré l'absence de tout conflit d'intérêts" => "This mode will have the following effects: all non-public information about a submission is not accessible to an editor until he/she has declared the absence of any conflict of interest",
+    "Vous avez été redirigé, car vous ne pouvez pas gérer un article pour lequel vous auriez un conflit d'intérêt" => "You've been redirected, because you cannot allowed to handle an article for which you have a conflict of interest",
+    "Vous avez été redirigé, car vous devez confirmer votre volonté d'accéder aux informations confidentielles liées à cette soumission" => "You've been redirected, because you must confirm your willingness to access confidential information related to this submission"
 ];

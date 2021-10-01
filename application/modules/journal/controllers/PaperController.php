@@ -121,11 +121,13 @@ class PaperController extends PaperDefaultController
             return;
         }
 
+        $loggedUid = Episciences_Auth::getUid();
+
         // redirect to login if user is not logged in and paper is not published
         if (
             !$paper->isPublished() && // current paper is not published yet
-            !array_key_exists(Episciences_Auth::getUid(), $paper->getReviewers()) && // nor reviewer
-            $paper->getUid() !== Episciences_Auth::getUid()
+            !array_key_exists($loggedUid, $paper->getReviewers()) && // nor reviewer
+            $paper->getUid() !== $loggedUid
         ) {
             $paperId = $paper->getPaperid() ?: $paper->getDocid();
             $id = Episciences_PapersManager::getPublishedPaperId($paperId);
@@ -181,6 +183,18 @@ class PaperController extends PaperDefaultController
             $paper->loadRatings();
             $this->view->reports = $paper->getRatings(null, Episciences_Rating_Report::STATUS_COMPLETED, Episciences_Auth::getUser());
         }
+
+        // COI
+
+        $isConflictDetected =
+            !Episciences_Auth::isSecretary() &&
+            $review->getSetting(Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED) &&
+            (
+                $paper->checkConflictResponse($loggedUid) === Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes'] ||
+                $paper->checkConflictResponse($loggedUid) === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']
+            );
+
+        $this->view->isConflictDetected = $isConflictDetected;
 
         // reviewers comments **************************************************
         // fetch reviewers comments
