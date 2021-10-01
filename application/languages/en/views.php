@@ -1749,6 +1749,10 @@ return [
     "Cela inclut les autres statuts." => "This includes other status.",
     // datasets
     'Données liées' => 'Linked data',
-    'Voir' => 'View'
+    'Voir' => 'View',
+    //COI
+    "Conflit d'intérêts (CI)" => "Conflict Of Interest (COI)",
+    "Activer/Désactiver le mode CI" => "Enable/Disable COI",
+    "Le mode conflit d'intérêts (CI) aura les effets suivants : toutes les informations non publiques concernant une soumission ne sont pas accessibles à un éditeur tant qu'il n'a pas déclaré l'absence de tout conflit d'intérêts" => "This mode will have the following effects: all non-public information about a submission is not accessible to an editor until he/she has declared the absence of any conflict of interest"
 
 ];
