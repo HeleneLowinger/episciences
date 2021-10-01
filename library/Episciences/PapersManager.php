@@ -2001,11 +2001,13 @@ class Episciences_PapersManager
             ->where('DOCID = ?', $docId)
             ->joinLeft(['conflicts' => T_PAPER_CONFLICTS], 'papers.PAPERID = conflicts.paper_id' );
 
-        $data = self::fromSequentialArrayToAssoc($select->query()->fetchAll())[$docId];
+        $data = self::fromSequentialArrayToAssoc($select->query()->fetchAll());
 
         if (!$data) {
             return false;
         }
+
+        $data = $data[$docId];
         return new Episciences_Paper(array_merge($data, ['withxsl' => $withxsl]));
 
     }
