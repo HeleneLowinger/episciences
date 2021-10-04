@@ -26,23 +26,30 @@ class Episciences_Paper_ConflictsManager
 
     /**
      * @param int $uid
-     * @return Episciences_Paper_Conflict|null
+     * @param string|null $answer
+     * @return array [Episciences_Paper_Conflict]
      */
-    public static function findByUid(int $uid): ?\Episciences_Paper_Conflict
+    public static function findByUidAndAnswer(int $uid, string $answer = null): array
     {
-        $oConflict = null;
+        $oConflicts = [];
+
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+
         $sql = $db->select()
             ->from(T_PAPER_CONFLICTS)
-            ->where('by = ?', $uid);
+            ->where("`by` = ?", $uid);
 
-        $row = $db->fetchRow($sql);
-
-        if ($row) {
-            $oConflict = new Episciences_Paper_Conflict($row);
+        if ($answer) {
+            $sql->where('answer = ?', $answer);
         }
 
-        return $oConflict;
+        $rows = $db->fetchAll($sql);
+
+        foreach ($rows as $row) {
+            $oConflicts [] = new Episciences_Paper_Conflict($row);
+        }
+
+        return $oConflicts;
     }
 
     /**

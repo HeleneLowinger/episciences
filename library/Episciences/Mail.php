@@ -706,7 +706,7 @@ class Episciences_Mail extends Zend_Mail
      * @return array
      */
 
-    public function getHistory($docId = null, array $options = [], bool $isFilterInfos = false)
+    public function getHistory($docId = null, array $options = [], bool $isFilterInfos = false): array
     {
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
         $sql = $this->getHistoryQuery($docId, $options, false, $isFilterInfos);
@@ -739,7 +739,7 @@ class Episciences_Mail extends Zend_Mail
      * @param bool $isFilterInfos
      * @return Zend_Db_Select
      */
-    private function getHistoryQuery($docId = null, array $options = [], bool $isCount = false, bool $isFilterInfos = false)
+    private function getHistoryQuery($docId = null, array $options = [], bool $isCount = false, bool $isFilterInfos = false): \Zend_Db_Select
     {
 
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
