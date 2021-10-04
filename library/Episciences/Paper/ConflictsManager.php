@@ -2,6 +2,8 @@
 
 class Episciences_Paper_ConflictsManager
 {
+    public const TABLE = T_PAPER_CONFLICTS;
+
     /**
      * @param int $paperId
      * @return array [Episciences_Paper_Conflict]
@@ -12,7 +14,7 @@ class Episciences_Paper_ConflictsManager
         $oResult = [];
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
         $sql = $db->select()
-            ->from(T_PAPER_CONFLICTS)
+            ->from(self::TABLE)
             ->where('paper_id = ?', $paperId);
 
         $rows = $db->fetchAssoc($sql);
@@ -36,7 +38,7 @@ class Episciences_Paper_ConflictsManager
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 
         $sql = $db->select()
-            ->from(T_PAPER_CONFLICTS)
+            ->from(self::TABLE)
             ->where("`by` = ?", $uid);
 
         if ($answer) {
@@ -60,7 +62,7 @@ class Episciences_Paper_ConflictsManager
         $conflicts = [];
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 
-        $sql = $db->select()->from(T_PAPER_CONFLICTS);
+        $sql = $db->select()->from(self::TABLE);
 
         $rows = $db->fetchAll($sql);
 
@@ -88,7 +90,7 @@ class Episciences_Paper_ConflictsManager
         }
 
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-        return ($db->delete(T_PAPER_CONFLICTS, ['paper_id = ?' => $paperId, 'by' => $uid]) > 0);
+        return ($db->delete(self::TABLE, ['paper_id = ?' => $paperId, 'by' => $uid]) > 0);
 
     }
 
@@ -103,7 +105,36 @@ class Episciences_Paper_ConflictsManager
         }
 
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-        return ($db->delete(T_PAPER_CONFLICTS, ['cid = ?' => $id]) > 0);
+        return ($db->delete(self::TABLE, ['cid = ?' => $id]) > 0);
+
+    }
+
+    /**
+     * @param string $col
+     * @param bool $distinct
+     * @param array $option // default: answer = no (without conflicts)
+     * @return array
+     */
+    public static function fetchSelectedCol(string $col, array $option = ['answer' => 'no'],  bool $distinct = true): array
+    {
+        $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+
+        $sql = $db->select()
+            ->from(self::TABLE, $col);
+
+        if ($distinct) {
+            $sql->distinct();
+        }
+
+        foreach ($option as $key => $val){
+
+            if(in_array($key, Episciences_Paper_Conflict::TABLE_COLONES)){
+                $sql->where("$key = ?", $val);
+            }
+
+        }
+
+        return $db->fetchCol($sql);
 
     }
 

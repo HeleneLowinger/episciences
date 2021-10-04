@@ -302,7 +302,7 @@ class Episciences_Review
      * @return Episciences_User[]
      * @throws Zend_Db_Statement_Exception
      */
-    public static function getEditors($strict = true): array
+    public static function getEditors(bool $strict = true): array
     {
         if ($strict) {
             return self::getUsers(Episciences_Acl::ROLE_EDITOR);

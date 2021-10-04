@@ -1164,7 +1164,6 @@ class Episciences_PapersManager
         if (empty($users)) {
             return false;
         }
-
         $currentUsers = [];
 
         $options = []; // editors options

@@ -2114,8 +2114,9 @@ class AdministratepaperController extends PaperDefaultController
      * editor assignment form
      * @return bool
      * @throws Zend_Db_Statement_Exception
+     * @throws Zend_Exception
      */
-    public function editorsformAction()
+    public function editorsformAction(): bool
     {
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
@@ -2131,8 +2132,15 @@ class AdministratepaperController extends PaperDefaultController
             return false;
         }
 
-        // fetch all editors (chief editors included)
-        $editors = Episciences_Review::getEditors(false);
+
+        $editors = $this->getEditorsWithoutCoi($paper);
+
+        if ($vid) {
+            $volume = Episciences_VolumesManager::find($vid);
+            if ($volume) {
+                $editors = array_merge($editors, $volume->getEditors());
+            }
+        }
 
         // Exclure l'auteur de l'article
         unset($editors[$paper->getUid()]);
@@ -2141,13 +2149,6 @@ class AdministratepaperController extends PaperDefaultController
         foreach ($editors as $uid => $editor) {
             if (!$paper->getEditor($uid) && Episciences_EditorsManager::isMonitoringRefused($uid, $docId)) {
                 unset($editors[$uid]);
-            }
-        }
-
-        if ($vid) {
-            $volume = Episciences_VolumesManager::find($vid);
-            if ($volume) {
-                $editors = array_merge($editors, $volume->getEditors());
             }
         }
 
@@ -2170,8 +2171,9 @@ class AdministratepaperController extends PaperDefaultController
      * formulaire d'assigantion des CE
      * @return bool
      * @throws Zend_Db_Statement_Exception
+     * @throws Zend_Exception
      */
-    public function copyeditorsformAction()
+    public function copyeditorsformAction(): bool
     {
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
@@ -2188,10 +2190,7 @@ class AdministratepaperController extends PaperDefaultController
             return false;
         }
 
-        $copyEditors = Episciences_Review::getCopyEditors();
-
-        // Exclure l'auteur de l'article
-        unset($copyEditors[$paper->getUid()]);
+        $copyEditors = $this->getCopyEditorsWithoutCoi($paper);
 
         if ($vId) {
             $volume = Episciences_VolumesManager::find($vId);
@@ -2199,6 +2198,9 @@ class AdministratepaperController extends PaperDefaultController
                 $copyEditors = array_merge($copyEditors, $volume->getCopyEditors());
             }
         }
+
+        // Exclure l'auteur de l'article
+        unset($copyEditors[$paper->getUid()]);
 
         if (!empty($copyEditors)) {
             $this->view->copyEditors = $copyEditors;
