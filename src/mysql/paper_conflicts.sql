@@ -22,3 +22,5 @@ alter table `paper_conflicts`
 
 alter table `paper_conflicts`
   MODIFY `cid` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `paper_conflicts` ADD `valid` ENUM('0','1') NOT NULL DEFAULT '1' AFTER `date`;
