@@ -3245,22 +3245,6 @@ class AdministratepaperController extends PaperDefaultController
             $oInvitation->save();
         }
 
-        //log
-        /*
-        $uid = $oAssignment->getUId();
-        if ($oAssignment->isTmp_user()) {
-            $user = new Episciences_User_Tmp();
-            $user->find($uid);
-            $user->generateScreen_name();
-            $comment = $user->getScreenName() . ' (tmp_user '.$uid.") a refusé l'invitation de relecture";;
-        } else {
-            $user = new Episciences_User;
-            $user->findWithCAS($uid);
-            $comment = $user->getFullName() . ' ('.$uid.") a refusé l'invitation de relecture";;
-        }
-        Episciences_PapersManager::log($oAssignment->getItemid(), $paper->getStatus(), $comment);
-        */
-
         //update assignment  (cancel)
         $params = [
             'itemid' => $oAssignment->getItemid(),
