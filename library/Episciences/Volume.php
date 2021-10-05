@@ -129,6 +129,7 @@ class Episciences_Volume
      * Renvoie les rédacteurs assignés au volume
      * @param bool $active
      * @return mixed
+     * @throws Zend_Db_Statement_Exception
      */
     public function getEditors($active = true)
     {
