@@ -12,9 +12,10 @@ class PaperController extends PaperDefaultController
 {
     /**
      *  display paper pdf
+     * @throws GuzzleException
      * @throws Zend_Db_Adapter_Exception
      * @throws Zend_Db_Statement_Exception
-     * @throws GuzzleException
+     * @throws Zend_Exception
      */
     public function pdfAction(): void
     {
@@ -31,7 +32,7 @@ class PaperController extends PaperDefaultController
 
         $pdf_name = $paper->getIdentifier() . '.pdf';
 
-       $this->RequestingUnpublishedFile($paper);
+       $this->RequestingAnUnpublishedFile($paper);
 
         if ($paper->isDeleted()) {
             $message = $this->view->translate("Le document demandé a été supprimé par son auteur.");

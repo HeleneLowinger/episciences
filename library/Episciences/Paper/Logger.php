@@ -59,6 +59,8 @@ class Episciences_Paper_Logger
 
     const CODE_DOI_ASSIGNED = 'doi_assigned';
 
+    public const CODE_COI_REPORTED = "coi_reported";
+
     // alert-
     const WARNING = 'warning';
     const INFO = 'info';

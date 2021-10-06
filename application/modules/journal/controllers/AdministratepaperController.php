@@ -494,20 +494,26 @@ class AdministratepaperController extends PaperDefaultController
         // check if user has required permissions
         if ($isConflictDetected || $loggedUid === $paper->getUid()) {
 
-            $message = 'Vous avez été redirigé, car vous ne pouvez pas gérer un article que vous avez vous-même déposé';
+            if ($loggedUid === $docId) {
 
-            if ($isConflictDetected) {
+                $message = 'Vous avez été redirigé, car vous ne pouvez pas gérer un article que vous avez vous-même déposé';
+                $url = '/paper/view?id=' . $docId;
+
+            } else {
 
                 if ($checkConflictResponse === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
                     $message = "Vous avez été redirigé, car vous devez confirmer votre volonté d'accéder aux informations confidentielles liées à cette soumission";
+
                 } else {
                     $message = "Vous avez été redirigé, car vous ne pouvez pas gérer un article pour lequel vous auriez un conflit d'intérêt";
                 }
 
+                $url = '/coi/report?id=' . $docId;
+
             }
 
             $this->_helper->FlashMessenger->setNamespace('warning')->addMessage($this->view->translate($message));
-            $this->_helper->redirector->gotoUrl('/paper/view?id=' . $paper->getDocid());
+            $this->_helper->redirector->gotoUrl($url);
 
         }
 
