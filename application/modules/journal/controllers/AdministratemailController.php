@@ -216,6 +216,7 @@ class AdministratemailController extends Zend_Controller_Action
 
             $review = Episciences_ReviewsManager::find(RVID);
             $review->loadSettings();
+            $docIds = [];
 
             if (!Episciences_Auth::isSecretary()) {
 
@@ -228,6 +229,7 @@ class AdministratemailController extends Zend_Controller_Action
 
                 } elseif ($review->getSetting(Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED)) {
                     $docIds = $this->papersNotInConflictProcessing($editor);
+                    $options['isCoiEnabled'] = true;
                 }
 
             } else {

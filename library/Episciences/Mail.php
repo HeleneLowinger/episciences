@@ -744,6 +744,8 @@ class Episciences_Mail extends Zend_Mail
 
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 
+        $isCoiEnabled = isset($options['isCoiEnabled']) && $options['isCoiEnabled'];
+
         $sql = (!$isCount) ?
             $db->select()->from(T_MAIL_LOG) :
             $db->select()->from(T_MAIL_LOG, [new Zend_Db_Expr("COUNT(*)")]);
@@ -751,9 +753,24 @@ class Episciences_Mail extends Zend_Mail
         $sql->where('RVID = ?', $this->getRvid());
 
         if (is_array($docId) && !empty($docId)) {
-            $sql->where('DOCID IS NULL OR DOCID IN (?)', $docId);
+
+            if (!$isCoiEnabled) {
+
+                $sql->where('DOCID IS NULL OR DOCID IN (?)', $docId);
+
+            } else {
+                $sql->where('DOCID IN (?)', $docId);
+            }
+
         } elseif ($docId) {
-            $sql->where('DOCID IS NULL OR DOCID = ?', $docId);
+
+            if ($isCoiEnabled) {
+                $sql->where('DOCID IS NULL OR DOCID = ?', $docId);
+
+            } else {
+                $sql->where('DOCID = ?', $docId);
+            }
+
         } else {
             $sql->where('DOCID IS NULL');
         }
@@ -783,12 +800,12 @@ class Episciences_Mail extends Zend_Mail
      * @param array $docIds
      * @param array $options
      * @param bool $isFilterInfos
-     * @return string
+     * @return int
      */
-    public function getCountHistory($docIds, array $options = [], bool $isFilterInfos = false)
+    public function getCountHistory($docIds, array $options = [], bool $isFilterInfos = false): int
     {
         $select = $this->getHistoryQuery($docIds, $options, true, $isFilterInfos);
-        return Zend_Db_Table_Abstract::getDefaultAdapter()->fetchOne($select);
+        return (int)Zend_Db_Table_Abstract::getDefaultAdapter()->fetchOne($select);
     }
 
     /**
