@@ -138,4 +138,52 @@ class Episciences_Paper_ConflictsManager
 
     }
 
+    /**
+     * @return Ccsd_Form
+     * @throws Zend_Exception
+     */
+    public static function getCoiForm(): \Ccsd_Form
+    {
+
+
+        $form = new Ccsd_Form();
+        $form->setAttrib('class', 'form-horizontal');
+        $form->getDecorator('FormRequired')->setOption('style', 'float: none;');
+
+
+
+        $translator = Zend_Registry::get('Zend_Translate');
+        $description = $translator->translate("Votre réponse ? ");
+
+        $multiCheckboxOptions = Episciences_Paper_Conflict::AVAILABLE_ANSWER;
+
+        $multiCheckboxDecorators = [
+            'ViewHelper',
+            ['HtmlTag', ['tag' => 'div', 'class' => 'col-md-9']],
+            ['Description', ['tag' => 'span', 'class' => 'hint']],
+            ['Errors', ['placement' => 'APPEND']],
+            ['Label', ['tag' => 'label', 'class' => "col-md-9 control-label"]]
+        ];
+
+        $form->addElement('multiCheckbox', 'coiReport', [
+            'description' => $description,
+            'multiOptions' => $multiCheckboxOptions,
+            'decorators' => $multiCheckboxDecorators
+        ]);
+
+        // submit button
+        $form->setActions(true)->createSubmitButton('submit', [
+            'label' => 'Enregistrer',
+            'class' => 'btn btn-primary'
+        ]);
+
+        return $form;
+
+
+
+
+
+
+    }
+
 }
