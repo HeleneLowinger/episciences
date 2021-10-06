@@ -76,26 +76,31 @@ class CoiController extends PaperDefaultController
         $docId = $paper->getDocid();
         $coiReport = $post['coiReport'][0];
 
+        $uid = Episciences_Auth::getUid();
+
         $url = '/' . self::PAPER_URL_STR . $docId;
 
         if ($coiReport !== Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
 
             $conflict = new Episciences_Paper_Conflict([
-                'by' => Episciences_Auth::getUid(),
+                'by' => $uid,
                 'paper_id' => $paper->getPaperid(),
                 'answer' => $coiReport
             ]);
 
-            if ($conflict->save() < 1) {
+            $latestInsertId = $conflict->save();
 
-                $paper->log(
-                    Episciences_Paper_Logger::CODE_COI_REPORTED,
-                    Episciences_Auth::getUid(),
-                    ['docId' => $docId, 'conflict' => $conflict->toArray()]
-                );
-
+            if ($latestInsertId < 1) {
                 $message = sprintf("<strong>%s</strong>", $this->view->translate("Votre réponse n'a pas pu être enregistrée."));
                 $this->_helper->FlashMessenger->setNamespace('error')->addMessage($message);
+
+            } else {
+
+                $conflict->setCid($latestInsertId);
+
+                $details = ['user' => ['fullname' => Episciences_Auth::getFullName()], 'conflict' => $conflict->toArray()];
+                $paper->log(Episciences_Paper_Logger::CODE_COI_REPORTED, Episciences_Auth::getUid(), $details);
+
             }
 
             if ($coiReport === Episciences_Paper_Conflict::AVAILABLE_ANSWER['no']) {

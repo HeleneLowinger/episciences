@@ -100,6 +100,7 @@ return [
     Episciences_Reviewer::STATUS_UNINVITED => 'non invité',
     Episciences_Paper_Logger::CODE_DOI_ASSIGNED => 'DOI assigné',
     Episciences_Paper_Logger::CODE_ALTER_PUBLICATION_DATE => 'Nouvelle date de publication',
+    Episciences_Paper_Logger::CODE_COI_REPORTED => Episciences_Paper_Logger::$_label[Episciences_Paper_Logger::CODE_COI_REPORTED] ,
 
     // Erreurs OAI
     "The operation ended with an error. Please try again." => "L'opération s'est terminée avec une erreur. Merci de réessayer.",

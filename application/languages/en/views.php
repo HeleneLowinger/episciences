@@ -985,6 +985,7 @@ return [
     Episciences_Paper_Logger::CODE_PAPER_COMMENT_FROM_REVIEWER_TO_CONTRIBUTOR => "Clarification request (reviewer to contributor)",
     Episciences_Paper_Logger::CODE_PAPER_COMMENT_FROM_CONTRIBUTOR_TO_REVIEWER => "Clarification answer (contributor to reviewer)",
     Episciences_Paper_Logger::CODE_DOI_ASSIGNED => 'DOI assignment',
+    Episciences_Paper_Logger::CODE_COI_REPORTED => 'COI report',
 
     Episciences_CommentsManager::$_typeLabel[Episciences_CommentsManager::TYPE_INFO_REQUEST] => "request for clarification",
     Episciences_CommentsManager::$_typeLabel[Episciences_CommentsManager::TYPE_INFO_ANSWER] => "response for clarification",
