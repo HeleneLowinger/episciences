@@ -225,7 +225,7 @@ class Episciences_Paper_Conflict
         $latestId = 0;
 
         $values = [
-            'paperId' => $this->getPaperId(),
+            'paper_id' => $this->getPaperId(),
             'by' => $this->getbY(),
             'answer' => $this->getAnswer(),
             'message' => $this->getMessage()
@@ -235,7 +235,6 @@ class Episciences_Paper_Conflict
             $db->insert(self::TABLE, $values);
             $latestId = (int)$db->lastInsertId();
         } catch (Zend_Db_Adapter_Exception $exception) {
-
             trigger_error($exception->getMessage(), E_USER_ERROR);
         }
 
