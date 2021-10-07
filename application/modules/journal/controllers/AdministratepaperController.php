@@ -2139,7 +2139,7 @@ class AdministratepaperController extends PaperDefaultController
         }
 
 
-        $editors = $this->getEditorsWithoutCoi($paper);
+        $editors = $this->getEditors($paper);
 
         if ($vid) {
             $volume = Episciences_VolumesManager::find($vid);
@@ -2196,7 +2196,7 @@ class AdministratepaperController extends PaperDefaultController
             return false;
         }
 
-        $copyEditors = $this->getCopyEditorsWithoutCoi($paper);
+        $copyEditors = $this->getCopyEditors($paper);
 
         if ($vId) {
             $volume = Episciences_VolumesManager::find($vId);
