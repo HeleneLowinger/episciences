@@ -204,11 +204,7 @@ class AdministratemailController extends Zend_Controller_Action
                 'offset' => $offset
             ];
 
-            $search = trim($search);
-
-            if ($search !== '') {
-                $options['search'] = $search;
-            }
+            $options['search'] = trim($search);
 
             if (!empty($requestOrder)) {
                 $options['order'] = Episciences_Tools::dataTableOrder($requestOrder, $dataTableColumns);

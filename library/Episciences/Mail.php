@@ -784,7 +784,7 @@ class Episciences_Mail extends Zend_Mail
      * @param String $word
      * @return Zend_Db_Select
      */
-    private function dataTableMailsSearchQuery(Zend_Db_Select $select, string $word = '')
+    private function dataTableMailsSearchQuery(Zend_Db_Select $select, string $word = ''): Zend_Db_Select
     {
         $where = "SUBJECT LIKE '%$word%' OR `TO` LIKE '%$word%' OR CC LIKE '%$word%' OR BCC LIKE '%$word%' OR CONVERT(`WHEN`, CHAR) LIKE '%$word%'";
         $select->where($where);
