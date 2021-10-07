@@ -49,7 +49,7 @@ class CoiController extends PaperDefaultController
                     $this->conflictProcessing($post, $paper);
                     return;
                 }
-
+                $this->view->paper = $paper;
                 $this->view->form = $form;
                 return;
             }
