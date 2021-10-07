@@ -772,11 +772,7 @@ class Episciences_Mail extends Zend_Mail
             }
 
         } else {
-            $sql->where('DOCID IS NULL');
-        }
-
-        // DataTable search
-        if ($isFilterInfos && array_key_exists('search', $options)) {
+            (!$isCoiEnabled) ? $sql->where('DOCID IS NULL') : $sql->where('DOCID = ?', 0); // fix Empty IN clause parameter list in MySQL
             $sql = $this->dataTableMailsSearchQuery($sql, $options['search']);
         }
 
