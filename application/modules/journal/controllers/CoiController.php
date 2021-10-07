@@ -74,7 +74,14 @@ class CoiController extends PaperDefaultController
     private function conflictProcessing(array $post, Episciences_Paper $paper): void
     {
         $docId = $paper->getDocid();
-        $coiReport = $post['coiReport'][0];
+        $coiReport = $post['coiReport'];
+        $message = '';
+
+        if ( (isset($post['message'])) && ($post['message'] !== '') ) {
+            $message = trim($post['message']);
+            //TODO Filter html only:  B I U Link
+        }
+
 
         $uid = Episciences_Auth::getUid();
 
@@ -85,7 +92,8 @@ class CoiController extends PaperDefaultController
             $conflict = new Episciences_Paper_Conflict([
                 'by' => $uid,
                 'paper_id' => $paper->getPaperid(),
-                'answer' => $coiReport
+                'answer' => $coiReport,
+                'message'=> $message
             ]);
 
 
