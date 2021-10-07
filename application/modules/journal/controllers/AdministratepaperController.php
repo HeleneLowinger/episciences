@@ -1029,6 +1029,12 @@ class AdministratepaperController extends PaperDefaultController
                     unset($oReviewers[Episciences_Auth::getUid()]);
                 }
 
+                //[COI] When inviting an reviewer; do not propose user that have confirmed (answer = yes) a COI in the user list
+
+                foreach ($this->usersWithReportedCoiProcessing($oPaper) as $uid => $user){
+                    unset($oReviewers[$uid]);
+                }
+
                 // **** filter reviewers list
 
                 // TODO: get this code out of the controller: move this to a model

@@ -589,7 +589,7 @@ class PaperDefaultController extends DefaultController
      * @return array
      * @throws Zend_Db_Statement_Exception
      */
-    private function usersWithReportedCoiProcessing(Episciences_Paper $paper, string $role = 'user', string $answer = Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes'] ): array
+    protected function usersWithReportedCoiProcessing(Episciences_Paper $paper, string $role = 'user', string $answer = Episciences_Paper_Conflict::AVAILABLE_ANSWER['yes'] ): array
     {
         $result = [];
 
