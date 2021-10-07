@@ -8,8 +8,6 @@ class Episciences_Paper_Conflict
         'later' => 'later'
     ];
 
-    public const IS_VALID_ENUM = ['0', '1'];
-
     public const TABLE = T_PAPER_CONFLICTS;
 
     public const TABLE_COLONES = ['cid', 'paper_id', 'by', 'answer', 'message', 'date'];
@@ -43,8 +41,6 @@ class Episciences_Paper_Conflict
      * @var DateTime
      */
     protected $_date = 'CURRENT_TIMESTAMP';
-
-    protected $_valid = self::IS_VALID_ENUM['1'];
 
     public function __construct(array $options = null)
     {
@@ -81,8 +77,7 @@ class Episciences_Paper_Conflict
             'by' => $this->getBy(),
             'answer' => $this->getAnswer(),
             'message' => $this->getMessage(),
-            'date' => $this->getDate(),
-            'valid' => $this->getValid()
+            'date' => $this->getDate()
         ];
     }
 
@@ -192,24 +187,6 @@ class Episciences_Paper_Conflict
     public function setDate(string $date = null): self
     {
         $this->_date = new DateTime($date);
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValid(): string
-    {
-        return $this->_valid;
-    }
-
-    /**
-     * @param string $valid
-     * @return Episciences_Paper_Conflict
-     */
-    public function setValid(string $valid): \Episciences_Paper_Conflict
-    {
-        $this->_valid = $valid;
         return $this;
     }
 
