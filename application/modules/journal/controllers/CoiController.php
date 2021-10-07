@@ -88,6 +88,7 @@ class CoiController extends PaperDefaultController
                 'answer' => $coiReport
             ]);
 
+
             $latestInsertId = $conflict->save();
 
             if ($latestInsertId < 1) {
@@ -97,6 +98,13 @@ class CoiController extends PaperDefaultController
             } else {
 
                 $conflict->setCid($latestInsertId);
+
+                try {
+                    $conflict->setDate();
+
+                } catch (Exception $e) {
+                    trigger_error($e->getMessage(), E_USER_ERROR);
+                }
 
                 $details = ['user' => ['fullname' => Episciences_Auth::getFullName()], 'conflict' => $conflict->toArray()];
                 $paper->log(Episciences_Paper_Logger::CODE_COI_REPORTED, Episciences_Auth::getUid(), $details);

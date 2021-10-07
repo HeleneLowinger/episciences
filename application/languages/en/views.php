@@ -43,6 +43,8 @@ return [
     'Relecteur <code>n</code>' => 'Reviewer <code>n</code>',
     'Télécharger' => 'Download',
     'Taille' => 'Size',
+    'Id permanent' => 'Permanent Id',
+    'Id document' => 'Document Id',
 
 
 
@@ -985,7 +987,7 @@ return [
     Episciences_Paper_Logger::CODE_PAPER_COMMENT_FROM_REVIEWER_TO_CONTRIBUTOR => "Clarification request (reviewer to contributor)",
     Episciences_Paper_Logger::CODE_PAPER_COMMENT_FROM_CONTRIBUTOR_TO_REVIEWER => "Clarification answer (contributor to reviewer)",
     Episciences_Paper_Logger::CODE_DOI_ASSIGNED => 'DOI assignment',
-    Episciences_Paper_Logger::CODE_COI_REPORTED => 'COI report',
+    Episciences_Paper_Logger::CODE_COI_REPORTED => 'Conflict Of Interest (COI)',
 
     Episciences_CommentsManager::$_typeLabel[Episciences_CommentsManager::TYPE_INFO_REQUEST] => "request for clarification",
     Episciences_CommentsManager::$_typeLabel[Episciences_CommentsManager::TYPE_INFO_ANSWER] => "response for clarification",
@@ -1756,5 +1758,6 @@ return [
     "Activer/Désactiver le mode CI" => "Enable/Disable COI",
     "Le mode conflit d'intérêts (CI) aura les effets suivants : toutes les informations non publiques concernant une soumission ne sont pas accessibles à un éditeur tant qu'il n'a pas déclaré l'absence de tout conflit d'intérêts" => "This mode will have the following effects: all non-public information about a submission is not accessible to an editor until he/she has declared the absence of any conflict of interest",
     "Vous avez été redirigé, car vous ne pouvez pas gérer un article pour lequel vous auriez un conflit d'intérêt" => "You've been redirected, because you cannot allowed to handle an article for which you have a conflict of interest",
-    "Vous avez été redirigé, car vous devez confirmer votre volonté d'accéder aux informations confidentielles liées à cette soumission" => "You've been redirected, because you must confirm your willingness to access confidential information related to this submission"
+    "Vous avez été redirigé, car vous devez confirmer votre volonté d'accéder aux informations confidentielles liées à cette soumission" => "You've been redirected, because you must confirm your willingness to access confidential information related to this submission",
+    "Rapporté le" => "Reported on"
 ];

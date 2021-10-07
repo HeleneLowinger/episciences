@@ -113,7 +113,7 @@ class Episciences_Paper_Logger
         self::CODE_PAPER_COMMENT_FROM_CONTRIBUTOR_TO_REVIEWER => self::VIOLET,
         self::CODE_DOI_ASSIGNED => self::INFO,
         self::CODE_ALTER_PUBLICATION_DATE => self::WARNING,
-        self::CODE_COI_REPORTED, self::INFO
+        self::CODE_COI_REPORTED => self::DANGER
     ];
 
     public static $_label = [
@@ -143,7 +143,7 @@ class Episciences_Paper_Logger
         self::CODE_PAPER_COMMENT_FROM_REVIEWER_TO_CONTRIBUTOR => "Demande d'éclaircissements (relecteur au contributeur)",
         self::CODE_PAPER_COMMENT_FROM_CONTRIBUTOR_TO_REVIEWER => "Réponse à une demande d'eclaicissement (contributeur au relecteur) ",
         self::CODE_DOI_ASSIGNED => 'DOI assigné',
-        self::CODE_COI_REPORTED => "Conflit signalé"
+        self::CODE_COI_REPORTED => "Conflit d'intérêts (CI)"
     ];
 
     /**
