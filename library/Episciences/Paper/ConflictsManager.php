@@ -115,7 +115,7 @@ class Episciences_Paper_ConflictsManager
      * @param array $option // default: answer = no (without conflicts)
      * @return array
      */
-    public static function fetchSelectedCol(string $col, array $option = ['answer' => 'no'],  bool $distinct = true): array
+    public static function fetchSelectedCol(string $col, array $option = ['answer' => 'no'], bool $distinct = true): array
     {
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
 
@@ -126,9 +126,9 @@ class Episciences_Paper_ConflictsManager
             $sql->distinct();
         }
 
-        foreach ($option as $key => $val){
+        foreach ($option as $key => $val) {
 
-            if(in_array($key, Episciences_Paper_Conflict::TABLE_COLONES)){
+            if (in_array($key, Episciences_Paper_Conflict::TABLE_COLONES)) {
                 $sql->where("$key = ?", $val);
             }
 
@@ -141,47 +141,45 @@ class Episciences_Paper_ConflictsManager
     /**
      * @return Ccsd_Form
      * @throws Zend_Exception
+     * @throws Zend_Form_Exception
      */
     public static function getCoiForm(): \Ccsd_Form
     {
 
-
         $form = new Ccsd_Form();
-        $form->setAttrib('class', 'form-horizontal');
-        $form->getDecorator('FormRequired')->setOption('style', 'float: none;');
 
-
-
-        $translator = Zend_Registry::get('Zend_Translate');
-        $description = $translator->translate("Votre réponse ? ");
-
-        $multiCheckboxOptions = Episciences_Paper_Conflict::AVAILABLE_ANSWER;
-
-        $multiCheckboxDecorators = [
-            'ViewHelper',
-            ['HtmlTag', ['tag' => 'div', 'class' => 'col-md-9']],
-            ['Description', ['tag' => 'span', 'class' => 'hint']],
-            ['Errors', ['placement' => 'APPEND']],
-            ['Label', ['tag' => 'label', 'class' => "col-md-9 control-label"]]
-        ];
-
-        $form->addElement('multiCheckbox', 'coiReport', [
-            'description' => $description,
-            'multiOptions' => $multiCheckboxOptions,
-            'decorators' => $multiCheckboxDecorators
+        $form->setDecorators([[
+            'ViewScript', [
+                'viewScript' => '/coi/userconfirmation.phtml'
+            ]],
+            $form->getDecorator('FormRequired'),
         ]);
 
-        // submit button
-        $form->setActions(true)->createSubmitButton('submit', [
-            'label' => 'Enregistrer',
-            'class' => 'btn btn-primary'
+
+        $form->addElement('textarea', 'message', [
+            'validators' => [['StringLength', false, ['max' => MAX_INPUT_TEXTAREA]]]
         ]);
+
+
+        $form->addElement(new Zend_Form_Element_Button([
+            'name' => 'yes',
+            'type' => 'submit'
+        ]));
+
+
+        $form->addElement(new Zend_Form_Element_Button([
+            'name' => 'no',
+            'type' => 'submit'
+
+        ]));
+
+
+        $form->addElement(new Zend_Form_Element_Button([
+            'name' => 'later',
+            'type' => 'submit'
+        ]));
 
         return $form;
-
-
-
-
 
 
     }
