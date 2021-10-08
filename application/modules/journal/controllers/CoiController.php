@@ -14,9 +14,8 @@ class CoiController extends PaperDefaultController
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
 
-        $docId = (int)$this->getRequest()->getParam('id');
+        $docId = (int)(!$request->isPost() ? $request->getParam('id') : $request->getPost('id'));
 
-        $journalSettings = Zend_Registry::get('reviewSettings');
         $paper = Episciences_PapersManager::get($docId);
 
         // check if paper exists
@@ -32,6 +31,8 @@ class CoiController extends PaperDefaultController
 
         $checkConflictResponse = $paper->checkConflictResponse($loggedUid);
 
+        $journalSettings = Zend_Registry::get('reviewSettings');
+
         $isConflictDetected =
             !Episciences_Auth::isSecretary() && isset($journalSettings[Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED]) &&
             $journalSettings[Episciences_Review::SETTING_SYSTEM_IS_COI_ENABLED] === '1' &&
@@ -44,11 +45,12 @@ class CoiController extends PaperDefaultController
 
             if ($checkConflictResponse === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
                 $form = Episciences_Paper_ConflictsManager::getCoiForm();
-                if (array_key_exists('submit', $post) && $request->isPost() && $form->isValid($post)) {
 
+                if ($request->isPost() && $form->isValid($post)) {
                     $this->conflictProcessing($post, $paper);
                     return;
                 }
+
                 $this->view->paper = $paper;
                 $this->view->form = $form;
                 return;
@@ -75,13 +77,19 @@ class CoiController extends PaperDefaultController
     {
         $docId = $paper->getDocid();
         $coiReport = $post['coiReport'];
-        $message = '';
+        $message = $post['message'];
 
-        if ( (isset($post['message'])) && ($post['message'] !== '') ) {
+        if ((isset($post['message'])) && ($post['message'] !== '')) {
+
             $message = trim($post['message']);
-            //TODO Filter html only:  B I U Link
-        }
+            $htmlPurifier = new Episciences_HTMLPurifier([
+                'HTML.AllowedElements' => ['p', 'b', 'u', 'i', 'a']
+            ]);
 
+            $decodedMessage = html_entity_decode($message);
+            $message = $htmlPurifier->purifyHtml($decodedMessage);
+
+        }
 
         $uid = Episciences_Auth::getUid();
 
@@ -93,7 +101,7 @@ class CoiController extends PaperDefaultController
                 'by' => $uid,
                 'paper_id' => $paper->getPaperid(),
                 'answer' => $coiReport,
-                'message'=> $message
+                'message' => $message
             ]);
 
 
