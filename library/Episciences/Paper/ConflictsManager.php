@@ -157,25 +157,17 @@ class Episciences_Paper_ConflictsManager
 
 
         $form->addElement('textarea', 'message', [
+            'id' => 'coi-message',
+            'label' => 'Commentaire facultatif',
+            'tiny' => true,
+            'class'=> 'form-control',
+            'rows' => '3',
             'validators' => [['StringLength', false, ['max' => MAX_INPUT_TEXTAREA]]]
         ]);
 
 
         $form->addElement(new Zend_Form_Element_Button([
             'name' => 'yes',
-            'type' => 'submit'
-        ]));
-
-
-        $form->addElement(new Zend_Form_Element_Button([
-            'name' => 'no',
-            'type' => 'submit'
-
-        ]));
-
-
-        $form->addElement(new Zend_Form_Element_Button([
-            'name' => 'later',
             'type' => 'submit'
         ]));
 

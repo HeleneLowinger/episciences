@@ -14,7 +14,7 @@ class CoiController extends PaperDefaultController
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
 
-        $docId = (int)(!$request->isPost() ? $request->getParam('id') : $request->getPost('id'));
+        $docId = (int)(!$request->getPost('id') ? $request->getParam('id') : $request->getPost('id'));
 
         $paper = Episciences_PapersManager::get($docId);
 
@@ -43,12 +43,19 @@ class CoiController extends PaperDefaultController
 
         if ($isConflictDetected) {
 
-            if ($checkConflictResponse === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
-                $form = Episciences_Paper_ConflictsManager::getCoiForm();
+            $form = Episciences_Paper_ConflictsManager::getCoiForm();
 
-                if ($request->isPost() && $form->isValid($post)) {
-                    $this->conflictProcessing($post, $paper);
-                    return;
+            if ($checkConflictResponse === Episciences_Paper_Conflict::AVAILABLE_ANSWER['later']) {
+
+                if (array_key_exists('coiReport', $post) && $request->isPost()) {
+
+                    if($form->isValid($post)){
+                        $this->conflictProcessing($post, $paper);
+                        return;
+                    }
+
+                    $form->setDefaults($post);
+                    $this->_helper->FlashMessenger->setNamespace('error')->addMessage($this->view->translate("Ce formulaire comporte des erreurs."));
                 }
 
                 $this->view->paper = $paper;
