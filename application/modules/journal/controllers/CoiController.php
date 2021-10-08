@@ -90,7 +90,7 @@ class CoiController extends PaperDefaultController
 
             $message = trim($post['message']);
             $htmlPurifier = new Episciences_HTMLPurifier([
-                'HTML.AllowedElements' => ['p', 'b', 'u', 'i', 'a']
+                'HTML.AllowedElements' => ['p', 'b', 'u', 'i', 'a', 'strong', 'em','span']
             ]);
 
             $decodedMessage = html_entity_decode($message);
