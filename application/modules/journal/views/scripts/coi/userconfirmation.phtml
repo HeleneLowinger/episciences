@@ -21,7 +21,6 @@
         <span id="helpBlock" class="help-block"><?= $this->translate("Ne pas accéder aux informations confidentielles. Les informations sur cette soumission resteront masquées pour vous.
                             Vous pouvez ajouter un commentaire facultatif pour expliquer la nature de votre conflit d'intérêt. Le commentaire sera visible par les gestionnaires de l'article.
                             Votre action sera enregistrée dans le journal des événements liés à la soumission.") ?></span>
-        <!--label for="coi-message"><?= $this->translate('Commentaire facultatif') ?></label-->
         <?php foreach ($this->element->getElements() as $name => $element) : ?>
             <?php
 
@@ -31,8 +30,6 @@
             ?>
         <?= $element ?>
         <?php endforeach; ?>
-        <!-- textarea maxlength="<?php echo MAX_INPUT_TEXTAREA; ?>" class="form-control" rows="3" id="coi-message"
-                  name="message"></textarea -->
     </div>
 
 </div>

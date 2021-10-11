@@ -33,8 +33,6 @@ $paper = $this->paper;
     <div class="col-md-5">
         <form class="form-horizontal" action="/coi/report" method="post">
             <input type="hidden" name="id" value="<?= $paper->getDocid() ?>">
-            <?php foreach ($this->form->getElements() as $name => $element) : ?>
-            <?php endforeach; ?>
             <?= $this->form ?>
         </form>
     </div>
