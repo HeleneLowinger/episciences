@@ -47,7 +47,13 @@ $(function () {
 
         let $checkBoxCondition1 = $('#disclaimers-disclaimer1');
         let $checkBoxCondition2 = $('#disclaimers-disclaimer2');
-        let version = $searchDocVersion.val();
+
+        let version;
+        let $isRequiredVersion = $searchDocVersion.length > 0;
+
+        if($isRequiredVersion){
+            version = $searchDocVersion.val();
+        }
 
         // submission error: attempt to re-submit
         if ($checkBoxCondition1.is(':checked')) {
@@ -59,7 +65,7 @@ $(function () {
             $checkBoxCondition2.prop('checked', false);
         }
 
-        if (!hasHook && ('' === version || isNaN(version))) {
+        if ($isRequiredVersion && !hasHook && ('' === version || isNaN(version))) {
             alert(translate("Veuillez indiquer la version du document (nombre uniquement)."));
             return;
         }

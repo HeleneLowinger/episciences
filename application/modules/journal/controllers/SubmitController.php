@@ -9,22 +9,40 @@ class SubmitController extends DefaultController
      * @throws Zend_File_Transfer_Exception
      * @throws Zend_Form_Exception
      */
-    public function indexAction()
+    public function indexAction(): void
     {
+
+        $default = [];
 
         $submit = new Episciences_Submit();
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
+        $params = $request->getParams();
+
+        $forwardService = 'episciences-zenodo';
+
+        $pattern = '#' . $forwardService . '(-' . APPLICATION_ENV . ')?[-.](' . DOMAIN . ')$#';
+
+        $isAllowedService = preg_match($pattern, $request->getHttpHost(), $matches);
+
+        if ($isAllowedService) {
+            $default ['forwardUri'] = $matches[0];
+            $default ['repoId'] = $params['repoid'] ?? 4;
+            $default ['version'] = $params['version'] ?? 1;
+            $default ['docId'] = $params['identifier'] ?? '';
+        }
 
         $review = Episciences_ReviewsManager::find(RVID);
+
         $review->loadSettings();
+
         $settings = $review->getSettings();
-        $form = $submit::getForm($settings);
+        $form = $submit::getForm($settings, $default, $isAllowedService);
 
         if ($request->isPost()) {
             $post = $request->getPost();
 
-            if(isset($post['search_doc']['repoId'])){
+            if (isset($post['search_doc']['repoId'])) {
                 $repoId = (int)$post['search_doc']['repoId'];
                 $hookCleanIdentifiers = Episciences_Repositories::callHook('hookCleanIdentifiers', ['id' => $post['search_doc']['docId'], 'repoId' => $repoId]);
                 if (!empty($hookCleanIdentifiers)) {
@@ -91,30 +109,30 @@ class SubmitController extends DefaultController
                         $this->_helper->FlashMessenger->setNamespace('success')->addMessage($message);
                     }
 
-                    $this->_helper->redirector('submitted', 'paper');
-                } else { // End isValid
+                    $post['forward_uri'] ? header('Location: ' . $post['forward_uri'] ) : $this->_helper->redirector('submitted', 'paper');
+                    return;
+                } // End isValid
 
-                    $validationErrors = '<ol  type="i">';
-                    foreach ($form->getMessages() as $val) {
-                        foreach ($val as $v) {
-                            $v = is_array($v) ? implode(' ', array_values($v)) : $v;
-                            $validationErrors .= '<li>';
-                            $validationErrors .= '<code>' . $v . '</code>';
-                            $validationErrors .= '</li>';
-                        }
+                $validationErrors = '<ol  type="i">';
+                foreach ($form->getMessages() as $val) {
+                    foreach ($val as $v) {
+                        $v = is_array($v) ? implode(' ', array_values($v)) : $v;
+                        $validationErrors .= '<li>';
+                        $validationErrors .= '<code>' . $v . '</code>';
+                        $validationErrors .= '</li>';
                     }
-                    $validationErrors .= '</ol>';
-
-                    $message = '<strong>';
-                    $message .= $this->view->translate("Ce formulaire comporte des erreurs");
-                    $message .= $this->view->translate(' :');
-                    $message .= $validationErrors;
-                    $message .= $this->view->translate('Merci de les corriger.');
-                    $message .= '</strong>';
-                    $this->_helper->FlashMessenger->setNamespace('error')->addMessage($message);
-                    $this->view->form = $form;
-                    $this->view->error = true;
                 }
+                $validationErrors .= '</ol>';
+
+                $message = '<strong>';
+                $message .= $this->view->translate("Ce formulaire comporte des erreurs");
+                $message .= $this->view->translate(' :');
+                $message .= $validationErrors;
+                $message .= $this->view->translate('Merci de les corriger.');
+                $message .= '</strong>';
+                $this->_helper->FlashMessenger->setNamespace('error')->addMessage($message);
+                $this->view->form = $form;
+                $this->view->error = true;
 
             } // end isPost
 
@@ -157,7 +175,7 @@ class SubmitController extends DefaultController
     /**
      * @throws Zend_Exception
      */
-    public function getdocAction()
+    public function getdocAction(): void
     {
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
@@ -261,7 +279,7 @@ class SubmitController extends DefaultController
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
 
-        if(!$request->isXmlHttpRequest() || !$request->isPost()){
+        if (!$request->isXmlHttpRequest() || !$request->isPost()) {
             return;
         }
 
